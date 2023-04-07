@@ -12,13 +12,16 @@ from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 from sklearn.preprocessing import StandardScaler
 from sklearn.compose import  make_column_transformer
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix
 from keras.models import Sequential
 from keras.layers import Dense
+import seaborn as sn
+import matplotlib.pyplot as plt
 
 import warnings
 warnings.filterwarnings('ignore')
 
-np.random.seed(42)
+pd.options.display.float_format = '{:.5f}'.format
 
 # Importing data
 dataset = pd.read_csv('Churn_Modelling.csv')
@@ -47,7 +50,7 @@ X = oneHotEncoder.fit_transform(X)
 X = X[:, 1:]
 
 # Separating training and testing data
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 42)
 
 # Feature scaling
 standardScaler = StandardScaler()
@@ -68,8 +71,8 @@ layer to configure the number of neurons in the hidden layers.
 This is one way to configure the quantity of neurons in the 
 hiddens layers.'''
 
-classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu', input_dim = 11))
-classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu'))
+classifier.add(Dense(units = 10, kernel_initializer = 'uniform', activation = 'relu', input_dim = 11))
+classifier.add(Dense(units = 10, kernel_initializer = 'uniform', activation = 'relu'))
 classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid'))
 
 # Compiling model
@@ -79,3 +82,18 @@ classifier.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accur
 # Training model
 
 classifier.fit(X_train, y_train, batch_size=10, epochs=100)
+
+y_pred = classifier.predict(X_test)
+
+# Apply threshold
+y_pred = (y_pred > 0.5)
+
+# Evaluating the model
+
+cm = confusion_matrix(y_test, y_pred)
+
+plt.figure(figsize = (10,7))
+plt.title('Confusion matrix')
+cfm_plot = sn.heatmap(cm, annot=True, fmt='g')
+cfm_plot.figure.savefig("cfm-10-neurons.png")
+
