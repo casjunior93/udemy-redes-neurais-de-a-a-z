@@ -65,7 +65,7 @@ classifier = Sequential()
 '''Is possible to use the mean between the number of neurons 
 in the input layer with the number of neurons in then output
 layer to configure the number of neurons in the hidden layers.
-This is one way to configure the quantity of nodes in the 
+This is one way to configure the quantity of neurons in the 
 hiddens layers.'''
 
 classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 'relu', input_dim = 11))
@@ -74,3 +74,8 @@ classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'si
 
 # Compiling model
 
+classifier.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+
+# Training model
+
+classifier.fit(X_train, y_train, batch_size=10, epochs=100)
