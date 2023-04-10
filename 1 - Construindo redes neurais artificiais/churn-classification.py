@@ -5,7 +5,9 @@ Created on Thu Apr  6 23:46:44 2023
 @author: Carlos Alberto Silva Júnior
 """
 
-# Importing libraries
+
+
+# DATA PREPARATION# Importing libraries
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
@@ -25,8 +27,6 @@ pd.options.display.float_format = '{:.5f}'.format
 
 # Importing data
 dataset = pd.read_csv('Churn_Modelling.csv')
-
-# DATA PREPARATION
 
 # Split independent and dependent data
 X = dataset.iloc[:, 3:13].values
