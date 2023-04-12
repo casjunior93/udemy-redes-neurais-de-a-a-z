@@ -6,6 +6,8 @@ Created on Tue Apr 11 07:29:08 2023
 """
 
 # Importando bibliotecas
+import pandas as pd
+import matplotlib.pyplot as plt
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D
@@ -53,4 +55,11 @@ test_set = test_dataimg.flow_from_directory(
     'data/test_set',  target_size=(64, 64), batch_size=32, class_mode='binary')
 
 # Treinando a rede neural
-classifier.fit(train_set, steps_per_epoch = 8000//32, epochs = 15, validation_data = test_set, validation_steps = 2000//32)
+early_stopping = tf.keras.callbacks.EarlyStopping(monitor = 'val_loss', patience=10, mode='min')
+history = classifier.fit(train_set, steps_per_epoch = 8000//32, epochs = 500, validation_data = test_set, validation_steps = 2000//32, callbacks=[early_stopping])
+
+#Exporting learning curves
+pd.DataFrame(history.history).plot(figsize=(10,7))
+plt.grid(True)
+plt.gca().set_ylim(0,1)
+plt.savefig("imgs/learning-curves-128-neurons.png")
