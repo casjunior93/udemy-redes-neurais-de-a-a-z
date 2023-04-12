@@ -31,6 +31,9 @@ input_shape = (64, 64, 3)
 classifier.add(
     Conv2D(filtros, kernel, input_shape=input_shape, activation='relu'))
 classifier.add(MaxPooling2D(pool_size=(2, 2)))
+classifier.add(
+    Conv2D(filtros, kernel, activation='relu'))
+classifier.add(MaxPooling2D(pool_size=(2, 2)))
 classifier.add(Flatten())
 
 # Como experimento, definimos 128 neurônios
@@ -55,11 +58,13 @@ test_set = test_dataimg.flow_from_directory(
     'data/test_set',  target_size=(64, 64), batch_size=32, class_mode='binary')
 
 # Treinando a rede neural
-early_stopping = tf.keras.callbacks.EarlyStopping(monitor = 'val_loss', patience=10, mode='min')
-history = classifier.fit(train_set, steps_per_epoch = 8000//32, epochs = 500, validation_data = test_set, validation_steps = 2000//32, callbacks=[early_stopping])
+early_stopping = tf.keras.callbacks.EarlyStopping(
+    monitor='val_loss', patience=10, mode='min')
+history = classifier.fit(train_set, steps_per_epoch=8000//32, epochs=500,
+                         validation_data=test_set, validation_steps=2000//32, callbacks=[early_stopping])
 
-#Exporting learning curves
-pd.DataFrame(history.history).plot(figsize=(10,7))
+# Exporting learning curves
+pd.DataFrame(history.history).plot(figsize=(10, 7))
 plt.grid(True)
-plt.gca().set_ylim(0,1)
+plt.gca().set_ylim(0, 1)
 plt.savefig("imgs/learning-curves-128-neurons.png")
